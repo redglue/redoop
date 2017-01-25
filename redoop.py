@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#                                
+#
 # Hadoop Data Advisor
 # version 0.1
 # Author: Redglue
@@ -10,7 +10,7 @@ import getopt
 import ConfigParser
 import plotly.tools as tls
 import plotly.plotly as py
-from plotly.tools import FigureFactory as FF 
+from plotly.tools import FigureFactory as FF
 
 #### ORACLE BASIC OPERATIONS ####
 
@@ -35,15 +35,16 @@ def executeQueryOracle(con, query):
 		cursor = con.cursor()
 		result=cursor.execute(query)
 		head=cursor.description
-		
-		for i in head: header.append(i[0])
 
+		#add column description
+		for c, col in enumerate(cursor.description):
+			header.append(col[0])
+
+		#add result set
 		data=[list(row) for row in cursor]
-		
 		data.insert(0, header)
 
-		
-
+		return data
 	except:
 		raise
 
@@ -60,9 +61,9 @@ def readSQL(filename):
 
 
 def help():
-	
+
 	print 'redoop.py -b <database> -o <output_file>'
-	print 'Example: hda.py -b oracle -o advisor_result.html'
+	print 'Example: redoop.py -b oracle -o advisor_result.html'
 
 
 
@@ -114,10 +115,14 @@ def OracleWorkflowAnalysisCMD():
 	print '[1.1] Analyzing Workload - Full Table Scans'
 	q=readSQL('oracle/ftstables.sql')
 	fts=executeQueryOracle(con, q)
-	table = FF.create_table(fts)
-	py.plot(table, filename='Full Table Scans')
+	print fts
+	#table = FF.create_table(fts, index=True)
+	#py.plot(table, filename='Full Table Scans')
 	print '[1.2] Analyzing Workload - Tables subject to modifications'
-		 
+	q=readSQL('oracle/mostdml.sql')
+	mdml=executeQueryOracle(con, q)
+	print mdml
+
 
 
 def main(argv):
