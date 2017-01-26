@@ -8,9 +8,10 @@ import cx_Oracle
 import sys
 import getopt
 import ConfigParser
-import plotly.tools as tls
-import plotly.plotly as py
-from plotly.tools import FigureFactory as FF
+import HTML
+#import plotly.tools as tls
+#import plotly.plotly as py
+#from plotly.tools import FigureFactory as FF
 
 #### ORACLE BASIC OPERATIONS ####
 
@@ -69,9 +70,8 @@ def help():
 
 def cmdlineOpts():
 
-	database='oracle'
-	filename='advisor.html'
-
+	filename=''
+	database=''
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], 'hd:o:')
 	except getopt.GetoptError as err:
@@ -107,28 +107,58 @@ def ConfigSectionMap(section):
 			dict1[option] = None
 	return dict1
 
-def OracleWorkflowAnalysisCMD():
-
+def OracleWorkflowAnalysisCMD(filename):
+	f=openHTML(filename)
 	print '## Hadoop Data Advisor - v0.1 (alpha) ##'
 	con = connectOracle()
 	raw_input("[1] Analyzing Workload - Press any key to continue...")
 	print '[1.1] Analyzing Workload - Full Table Scans'
 	q=readSQL('oracle/ftstables.sql')
 	fts=executeQueryOracle(con, q)
-	print fts
+	header=fts[0] # column names
+	fts.pop(0)
+	htmlcode = HTML.table(fts,header_row=header)
+	writeHTML(f, htmlcode)
 	#table = FF.create_table(fts, index=True)
 	#py.plot(table, filename='Full Table Scans')
 	print '[1.2] Analyzing Workload - Tables subject to modifications'
 	q=readSQL('oracle/mostdml.sql')
 	mdml=executeQueryOracle(con, q)
-	print mdml
+	header=mdml[0]
+	mdml.pop(0)
+	htmlcode = HTML.table(mdml, header_row=header)
+	writeHTML(f, htmlcode)
+	closeHTML(f)
 
 
+def openHTML(filename):
+	try:
+		f = open(filename, 'w')
+		return f
+	except:
+		raise
+
+def closeHTML(f):
+	try:
+		f.close()
+	except:
+		raise
+
+def writeHTML(f, htmlcode):
+	try:
+		f.write(htmlcode)
+		f.write('<p>')
+	except:
+		raise
 
 def main(argv):
-	tls.set_credentials_file(username='luis.marques', api_key='BMpB7AHKGNMVWSdFjxHg')
+	#tls.set_credentials_file(username='luis.marques', api_key='BMpB7AHKGNMVWSdFjxHg')
 	database, filename = cmdlineOpts()
-	OracleWorkflowAnalysisCMD()
+	print database, filename
+	if database == 'oracle':
+		OracleWorkflowAnalysisCMD(filename)
+	else:
+		print 'E: Database not supported!'
 
 
 if __name__ == "__main__":
