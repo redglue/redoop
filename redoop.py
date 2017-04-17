@@ -128,6 +128,14 @@ def OracleWorkflowAnalysisCMD(filename):
 	mdml.pop(0)
 	htmlcode = HTML.table(mdml, header_row=header)
 	writeHTML(f, htmlcode)
+	print '[1.3] Analyzing Workload - Range Partitioned Tables - Cold partitions'
+	q=readSQL('oracle/rangetcold.sql')
+	rangep=executeQueryOracle(con, q)
+	header=rangep[0]
+	rangep.pop(0)
+	htmlcode = HTML.table(rangep, header_row=header)
+	writeHTML(f, htmlcode)
+
 	closeHTML(f)
 
 
