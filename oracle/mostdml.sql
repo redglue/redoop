@@ -1,4 +1,4 @@
-select owner, object_name, count(1) from v$active_session_history ash, dba_objects dbo
+select owner, object_name, count(1) as NUM_OPERATIONS from v$active_session_history ash, dba_objects dbo
  where sql_opname in ('DELETE', 'UPDATE', 'INSERT')
  and dbo.object_id = ash.current_obj#
  and owner not in ('SYS', 'SYSTEM')

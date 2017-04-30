@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 #
 # Hadoop Data Advisor
-# version 0.1
-# Author: Redglue
+# version 0.2
+# Author: Redglue (Luís Marques luis.marques@redglue.eu)
 
 import cx_Oracle
 import sys
 import getopt
 import ConfigParser
-import HTML
-#import plotly.tools as tls
-#import plotly.plotly as py
-#from plotly.tools import FigureFactory as FF
+from tabulate import tabulate
+import datetime
+import socket
+
 
 #### ORACLE BASIC OPERATIONS ####
 
@@ -20,7 +20,8 @@ def readOracleCS():
 		connect_string = ConfigSectionMap("oracle")['connection_string']
  		return connect_string
  	except:
- 		raise
+ 		print 'E: Error reading Oracle configuration.'
+		sys.exit(1)
 
 def connectOracle():
 	try:
@@ -29,6 +30,9 @@ def connectOracle():
 		return con
 	except cx_Oracle.DatabaseError as e:
 		raise
+		print 'E: Error connectiong to database.'
+		sys.exit(1)
+
 
 def executeQueryOracle(con, query):
 	try:
@@ -47,7 +51,8 @@ def executeQueryOracle(con, query):
 
 		return data
 	except:
-		raise
+		print 'E: Error running Oracle query.'
+		sys.exit(1)
 
 
 def readSQL(filename):
@@ -57,14 +62,15 @@ def readSQL(filename):
 		q.close()
 
 	except:
-		raise
+		print 'E: Error reading configuration file.'
+		sys.exit(1)
 
 
 
 def help():
 
-	print 'redoop.py -b <database> -o <output_file>'
-	print 'Example: redoop.py -b oracle -o advisor_result.html'
+	print 'redoop.py -d <database> -o <output_file>'
+	print 'Example: redoop.py -b oracle -o file.txt'
 
 
 
@@ -107,55 +113,64 @@ def ConfigSectionMap(section):
 			dict1[option] = None
 	return dict1
 
+def getToday():
+	return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+def getHostname():
+	return socket.gethostname()
+
 def OracleWorkflowAnalysisCMD(filename):
-	f=openHTML(filename)
-	print '## Hadoop Data Advisor - v0.1 (alpha) ##'
+	f=openFile(filename)
 	con = connectOracle()
+	writeFile(f, 'redoop - Oracle Offload Hadoop Advisor - Report')
+	timenow=getToday()
+	hostname=getHostname()
+	connectionString=readOracleCS()
+	writeFile(f, 'Date: '+ timenow)
+	writeFile(f, 'Client hostname: '+hostname)
+	writeFile(f, 'Connection String: '+connectionString+'\n')
+	print '## Hadoop Data Advisor - v0.1 (alpha) ##'
+
 	raw_input("[1] Analyzing Workload - Press any key to continue...")
 	print '[1.1] Analyzing Workload - Full Table Scans'
 	q=readSQL('oracle/ftstables.sql')
 	fts=executeQueryOracle(con, q)
 	header=fts[0] # column names
-	fts.pop(0)
-	htmlcode = HTML.table(fts,header_row=header)
-	writeHTML(f, htmlcode)
-	#table = FF.create_table(fts, index=True)
-	#py.plot(table, filename='Full Table Scans')
+	writeFile(f, '== Full Table Scans ==')
+	writeFile(f, tabulate(fts, headers="firstrow")+'\n')
+
 	print '[1.2] Analyzing Workload - Tables subject to modifications'
 	q=readSQL('oracle/mostdml.sql')
 	mdml=executeQueryOracle(con, q)
 	header=mdml[0]
-	mdml.pop(0)
-	htmlcode = HTML.table(mdml, header_row=header)
-	writeHTML(f, htmlcode)
+	writeFile(f, '== Tables subject to modifications ==')
+	writeFile(f, tabulate(mdml,headers="firstrow")+'\n')
+
 	print '[1.3] Analyzing Workload - Range Partitioned Tables - Cold partitions'
 	q=readSQL('oracle/rangetcold.sql')
 	rangep=executeQueryOracle(con, q)
 	header=rangep[0]
-	rangep.pop(0)
-	htmlcode = HTML.table(rangep, header_row=header)
-	writeHTML(f, htmlcode)
+	writeFile(f, '== Tables subject to modifications ==')
+	writeFile(f, tabulate(rangep, headers="firstrow")+'\n')
 
-	closeHTML(f)
+	closeFile(f)
 
-
-def openHTML(filename):
+def openFile(filename):
 	try:
 		f = open(filename, 'w')
 		return f
 	except:
 		raise
 
-def closeHTML(f):
+def closeFile(f):
 	try:
 		f.close()
 	except:
 		raise
 
-def writeHTML(f, htmlcode):
+def writeFile(f, output):
 	try:
-		f.write(htmlcode)
-		f.write('<p>')
+		f.write(output)
+		f.write('\n')
 	except:
 		raise
 
@@ -167,6 +182,7 @@ def main(argv):
 		OracleWorkflowAnalysisCMD(filename)
 	else:
 		print 'E: Database not supported!'
+		sys.exit(1)
 
 
 if __name__ == "__main__":

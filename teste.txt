@@ -1,0 +1,19 @@
+redoop - Oracle Offload Hadoop Advisor - Report
+Date: 2017-04-30 15:05:46
+Client hostname: Luiss-MBP-2
+Connection String: system/oracle@52.232.29.202/p12
+
+== Full Table Scans ==
+OBJECT_NAME    TABLE_SCANS
+-------------  -------------
+
+== Tables subject to modifications ==
+OWNER    OBJECT_NAME      NUM_OPERATIONS
+-------  -------------  ----------------
+DW       CUSTOMERS                   641
+DW       ADDRESSES                   214
+
+== Tables subject to modifications ==
+DATE_INTERVAL    TABLE_OWNER    TABLE_NAME    PARTITION_NAME    OBJECT_TYPE    BLOCK_CHANGES    PHYSICAL_WRITES
+---------------  -------------  ------------  ----------------  -------------  ---------------  -----------------
+
