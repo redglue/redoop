@@ -1,7 +1,35 @@
 redoop - Oracle Offload Hadoop Advisor - Report
-Date: 2017-04-30 15:05:46
+Date: 2017-04-30 15:35:03
 Client hostname: Luiss-MBP-2
 Connection String: system/oracle@52.232.29.202/p12
+
+== Top 25 Sized Tables and Partitions ==
+OWNER    TABLE_NAME    PARTITION_NAME    SEGMENT_TYPE       SIZE_GB
+-------  ------------  ----------------  ---------------  ---------
+DW       CUSTOMERS     SYS_P266          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P242          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P243          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P244          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P245          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P246          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P247          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P248          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P249          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P250          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P251          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P252          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P253          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P254          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P255          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P256          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P257          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P258          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P259          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P260          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P261          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P262          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P263          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P264          TABLE PARTITION  0.0351562
 
 == Full Table Scans ==
 OBJECT_NAME    TABLE_SCANS
@@ -10,10 +38,10 @@ OBJECT_NAME    TABLE_SCANS
 == Tables subject to modifications ==
 OWNER    OBJECT_NAME      NUM_OPERATIONS
 -------  -------------  ----------------
-DW       CUSTOMERS                   641
-DW       ADDRESSES                   214
+DW       CUSTOMERS                   929
+DW       ADDRESSES                   451
 
-== Tables subject to modifications ==
+== Range Partitioned Tables - Cold partitions ==
 DATE_INTERVAL    TABLE_OWNER    TABLE_NAME    PARTITION_NAME    OBJECT_TYPE    BLOCK_CHANGES    PHYSICAL_WRITES
 ---------------  -------------  ------------  ----------------  -------------  ---------------  -----------------
 

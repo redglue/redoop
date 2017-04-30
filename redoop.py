@@ -2,7 +2,7 @@
 #
 # Hadoop Data Advisor
 # version 0.2
-# Author: Redglue (Luís Marques luis.marques@redglue.eu)
+# Author: Redglue (Luis Marques luis.marques@redglue.eu)
 
 import cx_Oracle
 import sys
@@ -51,6 +51,7 @@ def executeQueryOracle(con, query):
 
 		return data
 	except:
+		#raise
 		print 'E: Error running Oracle query.'
 		sys.exit(1)
 
@@ -131,28 +132,37 @@ def OracleWorkflowAnalysisCMD(filename):
 	print '## Hadoop Data Advisor - v0.1 (alpha) ##'
 
 	raw_input("[1] Analyzing Workload - Press any key to continue...")
-	print '[1.1] Analyzing Workload - Full Table Scans'
+
+	print '[1.1] Analyzing Workload - Top 25 sized Segments (T-P)'
+	q=readSQL('oracle/topsizedtables.sql')
+	topt=executeQueryOracle(con, q)
+	header=topt[0] # column names
+	writeFile(f, '== Top 25 Sized Tables and Partitions ==')
+	writeFile(f, tabulate(topt, headers="firstrow")+'\n')
+
+	print '[1.2] Analyzing Workload - Full Table Scans'
 	q=readSQL('oracle/ftstables.sql')
 	fts=executeQueryOracle(con, q)
 	header=fts[0] # column names
 	writeFile(f, '== Full Table Scans ==')
 	writeFile(f, tabulate(fts, headers="firstrow")+'\n')
 
-	print '[1.2] Analyzing Workload - Tables subject to modifications'
+	print '[1.3] Analyzing Workload - Tables subject to modifications'
 	q=readSQL('oracle/mostdml.sql')
 	mdml=executeQueryOracle(con, q)
 	header=mdml[0]
 	writeFile(f, '== Tables subject to modifications ==')
 	writeFile(f, tabulate(mdml,headers="firstrow")+'\n')
 
-	print '[1.3] Analyzing Workload - Range Partitioned Tables - Cold partitions'
+	print '[1.4] Analyzing Workload - Range Partitioned Tables - Cold partitions'
 	q=readSQL('oracle/rangetcold.sql')
 	rangep=executeQueryOracle(con, q)
 	header=rangep[0]
-	writeFile(f, '== Tables subject to modifications ==')
+	writeFile(f, '== Range Partitioned Tables - Cold partitions ==')
 	writeFile(f, tabulate(rangep, headers="firstrow")+'\n')
 
 	closeFile(f)
+	con.close()
 
 def openFile(filename):
 	try:
@@ -175,9 +185,7 @@ def writeFile(f, output):
 		raise
 
 def main(argv):
-	#tls.set_credentials_file(username='luis.marques', api_key='BMpB7AHKGNMVWSdFjxHg')
 	database, filename = cmdlineOpts()
-	print database, filename
 	if database == 'oracle':
 		OracleWorkflowAnalysisCMD(filename)
 	else:
