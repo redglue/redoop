@@ -1,35 +1,35 @@
 redoop - Oracle Offload Hadoop Advisor - Report
-Date: 2017-04-30 15:35:03
+Date: 2017-04-30 15:52:13
 Client hostname: Luiss-MBP-2
 Connection String: system/oracle@52.232.29.202/p12
 
 == Top 25 Sized Tables and Partitions ==
 OWNER    TABLE_NAME    PARTITION_NAME    SEGMENT_TYPE       SIZE_GB
 -------  ------------  ----------------  ---------------  ---------
-DW       CUSTOMERS     SYS_P266          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P242          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P243          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P244          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P245          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P246          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P247          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P248          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P249          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P250          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P251          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P252          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P253          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P254          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P255          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P256          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P257          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P258          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P259          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P260          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P261          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P262          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P263          TABLE PARTITION  0.0351562
-DW       CUSTOMERS     SYS_P264          TABLE PARTITION  0.0351562
+DW       CUSTOMERS     SYS_P255          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P247          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P246          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P245          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P244          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P243          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P242          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P241          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P240          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P239          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P238          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P237          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P236          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P235          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P266          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P265          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P264          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P263          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P262          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P261          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P260          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P259          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P258          TABLE PARTITION  0.0380859
+DW       CUSTOMERS     SYS_P257          TABLE PARTITION  0.0380859
 
 == Full Table Scans ==
 OBJECT_NAME    TABLE_SCANS
@@ -38,10 +38,17 @@ OBJECT_NAME    TABLE_SCANS
 == Tables subject to modifications ==
 OWNER    OBJECT_NAME      NUM_OPERATIONS
 -------  -------------  ----------------
-DW       CUSTOMERS                   929
-DW       ADDRESSES                   451
+DW       CUSTOMERS                  1000
+DW       ADDRESSES                   533
 
 == Range Partitioned Tables - Cold partitions ==
 DATE_INTERVAL    TABLE_OWNER    TABLE_NAME    PARTITION_NAME    OBJECT_TYPE    BLOCK_CHANGES    PHYSICAL_WRITES
 ---------------  -------------  ------------  ----------------  -------------  ---------------  -----------------
 
+=================== Considerations =================
+
+* Cold Partitions are sometimes good candidates for offload to Hadoop
+* Cold Tables are good candidates for offload Hadoop
+* Bigger segments that are cold are the ideal candidates
+* Tables subject to much dml operations are bad candidates for Hadoop
+* Complex datatypes, materialized view, etc tables are not good to offload

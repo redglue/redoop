@@ -161,8 +161,19 @@ def OracleWorkflowAnalysisCMD(filename):
 	writeFile(f, '== Range Partitioned Tables - Cold partitions ==')
 	writeFile(f, tabulate(rangep, headers="firstrow")+'\n')
 
+	Hadoopconsiderations(f)
 	closeFile(f)
 	con.close()
+
+
+def Hadoopconsiderations(f):
+	writeFile(f, '=================== Considerations =================\n')
+	writeFile(f, '''* Cold Partitions are sometimes good candidates for offload to Hadoop
+* Cold Tables are good candidates for offload Hadoop
+* Bigger segments that are cold are the ideal candidates
+* Tables subject to much dml operations are bad candidates for Hadoop
+* Complex datatypes, materialized view, etc tables are not good to offload''')
+
 
 def openFile(filename):
 	try:
